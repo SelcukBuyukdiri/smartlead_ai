@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air - SmartLead AI Servisi</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f7f9fa;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            max-width: 520px;
+            width: 100%;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+        .badge {
+            display: inline-block;
+            background: #e6f4ea;
+            color: #137333;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        h1 { margin: 0 0 8px 0; font-size: 24px; font-weight: 600; }
+        p { color: #5f6368; line-height: 1.5; font-size: 14px; margin-bottom: 24px; }
+        .chat-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #dadce0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        button:hover { background-color: #1557b0; }
+        .response-box {
+            background: #f1f3f4;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 14px;
+            min-height: 48px;
+            color: #202124;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <span class="badge">● Sistem Aktif (Render Canlı Yayında)</span>
+        <h1>Air AI Servisi</h1>
+        <p>Hava kalitesi ölçüm asistanı backend servisi başarıyla çalışıyor. Aşağıdaki kutudan API haberleşmesini doğrudan test edebilirsiniz.</p>
+        
+        <div class="chat-box">
+            <input type="text" id="soruInput" placeholder="Air'e bir soru sorun (örn: Cihaz ne yapar?)..." />
+            <button onclick="mesajGonder()">Gönder</button>
+        </div>
+
+        <div class="response-box" id="yanitAlani">Yanıt burada görünecek...</div>
+    </div>
+
+    <script>
+        async function mesajGonder() {
+            const input = document.getElementById("soruInput");
+            const yanit = document.getElementById("yanitAlani");
+            const soru = input.value.trim();
+
+            if (!soru) return;
+
+            yanit.innerText = "Air yanıtlıyor...";
+            try {
+                const res = await fetch("/api/sohbet", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ soru: soru })
+                });
+                const data = await res.json();
+                if (data.basari) {
+                    yanit.innerText = data.cevap;
+                } else {
+                    yanit.innerText = "Hata: " + (data.hata || "Bilinmeyen hata");
+                }
+            } catch (err) {
+                yanit.innerText = "Bağlantı hatası oluştu: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
