@@ -10,6 +10,10 @@ def create_app():
     # CORS ayarı (calismaFlask.py'deki gibi tüm kaynaklara açık)
     CORS(app)
 
+    # Veritabanını başlat
+    with app.app_context():
+        database.init_db(app)
+
     # Rotaları kaydet
     from app.routes import main_bp, api_bp
     app.register_blueprint(main_bp)
