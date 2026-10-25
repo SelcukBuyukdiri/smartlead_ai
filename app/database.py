@@ -15,7 +15,7 @@ def init_db(app=None):
         CREATE TABLE IF NOT EXISTS leads (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             isim TEXT NOT NULL,
-            telefon TEXT NOT NULL,
+            email TEXT NOT NULL,
             mesaj TEXT,
             tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -23,12 +23,12 @@ def init_db(app=None):
     conn.commit()
     conn.close()
 
-def lead_ekle(isim: str, telefon: str, mesaj: str = ""):
+def lead_ekle(isim: str, email: str, mesaj: str = ""):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO leads (isim, telefon, mesaj) VALUES (?, ?, ?)",
-        (isim, telefon, mesaj)
+        "INSERT INTO leads (isim, email, mesaj) VALUES (?, ?, ?)",
+        (isim, email, mesaj)
     )
     conn.commit()
     yeni_id = cursor.lastrowid
@@ -38,7 +38,7 @@ def lead_ekle(isim: str, telefon: str, mesaj: str = ""):
 def tum_leadler():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, isim, telefon, mesaj, tarih FROM leads ORDER BY tarih DESC")
+    cursor.execute("SELECT id, isim, email, mesaj, tarih FROM leads ORDER BY tarih DESC")
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
